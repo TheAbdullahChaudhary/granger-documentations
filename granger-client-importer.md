@@ -75,6 +75,17 @@ Unknown columns are saved as user meta with the `gci_` prefix. For example, a he
 
 ---
 
+### Usage
+- Install and activate the plugin.
+- Go to WP Admin → “Client Importer”.
+- Step 1: Upload your CSV/XLSX (first row must be headers).
+- Step 2: Choose default role, password mode, optional reset emails, and batch size; start the import.
+- Monitor progress until complete. New users are ready to log in; existing users are skipped.
+- Go to “All Users Data” to review imported fields and export CSV.
+- Use “Duplicate Cleanup” to scan and remove duplicates if needed.
+
+---
+
 ### Usage Details
 #### Duplicate handling
 - During import, if an email or username already exists, that row is skipped (no updates are made to existing users).
@@ -133,22 +144,16 @@ Unknown columns are saved as user meta with the `gci_` prefix. For example, a he
 
 ---
 
-### Developer Notes
-- Main plugin file: `granger-client-importer.php`
-- Custom table: `{$wpdb->prefix}gci_user_sheet_data`
-  - Columns: `id`, `user_id`, `batch_id`, `data_json`, `created_at`, `updated_at`
-  - Stores a JSON snapshot of the imported row (with password-like fields removed)
-- User meta:
-  - `gci_*` keys for all imported columns (excluding password fields)
-  - `gci_import_batch` for the batch identifier
-  - `gci_password_hash` if “passwords are hashed” mode is used
-- AJAX actions (admin):
-  - `gci_upload_file`, `gci_start_import`, `gci_bulk_set_role`, `gci_find_duplicates`, `gci_delete_duplicates`
-- Shortcode:
-  - `gci_contact_banner` with optional attributes `text`, `email`, `name`
-    - Example: `[gci_contact_banner text="Need help with a custom plugin?" email="you@example.com" name="Your Name"]`
-
----
+### Shortcode Usage
+- Add the contact banner anywhere (pages, posts, widgets) using:
+  - `[gci_contact_banner]`
+- Optional attributes:
+  - `text`: Custom message
+  - `email`: Target email address
+  - `name`: Displayed contact name
+- Example:
+  - `[gci_contact_banner text="Need help with a custom plugin?" email="you@example.com" name="Your Name"]`
+ 
 
  
 
