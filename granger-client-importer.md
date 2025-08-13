@@ -48,21 +48,30 @@ Unknown columns are saved as user meta with the `gci_` prefix. For example, a he
 ---
 
 ### End-to-End Workflow
-1. **Open the importer**: In WP Admin, go to “Client Importer”.
-2. **Upload file (Step 1)**: Select a `.csv` or `.xlsx`. The first row must be headers. On success, the file is saved to your uploads folder (e.g., `.../uploads/gci-import.csv`).
-3. **Configure & start (Step 2)**:
-   - Choose a default role for all new users.
-   - Choose password mode:
-     - Leave unchecked to use plaintext passwords from the file (or generate random passwords if none provided).
-     - Check “Passwords are hashed” if your file contains hashes unknown to WordPress (e.g., legacy system). In this mode, a temporary password is set so users can log in after a reset.
-   - Optionally send reset emails to newly created users.
-   - Set batch size (start with 100–300; importer adapts automatically if the server is busy).
-   - Click “Start Import”. Keep the page open until complete.
-4. **Progress & logs**: Watch created/skipped entries and the log stream. On completion you’ll see a summary.
-5. **After import**:
-   - New users are ready to log in. Existing users were skipped and not modified.
-   - All source columns are stored as user meta with `gci_` prefix.
-   - The import batch ID is recorded in user meta `gci_import_batch` (format like `YYYYMMDD-HHMMSS`).
+#### Preparation
+- **Prepare your file**: Ensure a single header row. Include at minimum an Email column. Optional columns: Username, First Name, Last Name, Display Name, Role, Password, Website, etc.
+- **XLSX specifics**: Place headers on Sheet1; make sure the server has the `ZipArchive` PHP extension enabled.
+
+#### Import
+1. **Open**: In WP Admin, go to “Client Importer”.
+2. **Step 1 — Upload**: Select a `.csv` or `.xlsx`. On success, the file is saved to `uploads` (e.g., `.../uploads/gci-import.csv`).
+3. **Step 2 — Configure**:
+   - **Default Role**: Role for all newly created users.
+   - **Password Mode**:
+     - Leave unchecked for plaintext passwords from the file (or auto-generate if missing).
+     - Check “Passwords are hashed” if the file contains non-WordPress hashes; optionally enable reset emails.
+   - **Reset Emails**: Send password reset email to newly created users.
+   - **Batch Size**: Start with 100–300. The importer adapts if the server is busy.
+   - Click **Start Import** and keep the page open until complete.
+
+#### Monitoring
+- **Progress & logs**: Real-time created/skipped entries, progress bar, and log messages. The importer will auto-retry and reduce batch size on server load.
+
+#### Post-import
+- **Verify users**: Check Users → All Users; new users are approved and ready to log in. Existing users were skipped and not modified.
+- **Imported data**: All source columns are saved as `gci_` user meta. Batch ID stored in `gci_import_batch` (`YYYYMMDD-HHMMSS`).
+- **Export**: Use “All Users Data” page to export CSV (current page or all users).
+- **Clean up duplicates**: If duplicates exist historically, run the “Duplicate Cleanup” tool to scan and delete all but the oldest per group.
 
 ---
 
@@ -141,11 +150,6 @@ Unknown columns are saved as user meta with the `gci_` prefix. For example, a he
 
 ---
 
-### Changelog
-- 1.1.3
-  - UI/UX improvements, progress logs, duplicate cleanup, users data export, custom DB storage.
-
-### License
-Proprietary or as distributed by the project owner.
+ 
 
 
