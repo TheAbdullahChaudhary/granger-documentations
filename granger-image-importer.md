@@ -85,6 +85,14 @@ If the image file is not found in the server folder, that row is skipped.
 
 
 ## Using the admin screens
+### Pre‑flight checklist
+- You are logged in as an Administrator (has `manage_options`).
+- For XLSX: PHP `ZipArchive` extension is enabled.
+- Your browser supports folder selection (Chrome/Edge recommended).
+- Server limits are sufficient (upload_max_filesize, post_max_size, max_execution_time, memory_limit).
+- If transferring to EDD, ensure the EDD plugin is active.
+- Optional: Make a database backup before large imports.
+
 ### Step 1: Upload CSV/XLSX
 - Choose your file and upload. The path is stored server-side as `granger-excel-import.<ext>` in the uploads directory.
 
@@ -95,6 +103,17 @@ If the image file is not found in the server folder, that row is skipped.
 ### Step 3: Run import
 - Confirm the “Images Folder Path (on server)” is correct.
 - Choose a **Batch Size** (50–100 recommended to start). The process runs server-side; progress shows in the UI.
+- During import, each row attempts to find a matching image. If not found, that row is skipped and reported in the log.
+- Short descriptions are auto-derived and saved as the post excerpt and `granger_short_description` meta.
+
+#### Verify a few imported records
+1. Go to `Granger Images` → All Items.
+2. Open a few posts and confirm:
+   - Featured image is set.
+   - Title and Description are populated.
+   - Category and Keywords assigned.
+   - Meta fields such as `granger_id`, `granger_date`, `granger_caption` exist.
+3. In the list view, use filters/search to spot-check counts and taxonomy assignments.
 
 ### Step 4: Transfer to Easy Digital Downloads (optional)
 - Requires the EDD plugin (the page shows status). Configure:
@@ -102,6 +121,19 @@ If the image file is not found in the server folder, that row is skipped.
   - **Batch Size**: items per request
   - **Update Existing**: if checked, re-syncs already-linked Downloads; otherwise only creates missing ones
 - The plugin avoids duplicates by checking, in order: linked meta, SKU (uses formatted `granger_id`), slug/title, and matching thumbnail.
+
+#### Verify EDD products
+1. Go to `Downloads` → All Downloads.
+2. Open a few items and confirm:
+   - Featured image matches the `granger_image` thumbnail.
+   - Price (`edd_price`) and SKU (`edd_sku`) are set.
+   - `download_category` and `download_tag` mirror the source terms.
+   - Meta like `image_short_description` and copied `granger_*` fields exist.
+
+### Re-running and recovery
+- Safe to re-run: existing `granger_image` posts with the same `granger_id` are skipped.
+- If you imported before uploading images, use Tools → “Delete Posts Without Featured Image,” then upload images and re-run import.
+- To re-transfer to EDD without duplicates, enable “Update Existing.”
 
 
 ## How metadata is mapped
@@ -153,6 +185,8 @@ Admin → Granger Importer → Tools
 - **Timeouts**: Reduce batch size; increase PHP time/memory limits.
 - **EDD transfer button disabled**: Install and activate Easy Digital Downloads.
 
+If issues persist, try a small 5–10 row CSV first to validate filenames and column headers, then scale up.
+
 
 ## FAQ
 - **Can I use .xls files?** No. Save as CSV or XLSX.
@@ -170,7 +204,4 @@ Admin → Granger Importer → Tools
   - Images: `wp-content/uploads/granger-images/`
 
 
-## License
-This project is provided as-is without warranty. See plugin header for author attribution.
-
-
+ 
